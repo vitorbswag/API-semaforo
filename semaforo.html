@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transito</title>
+</head>
+
+ <style>
+
+    body{
+        background-image: url(image/background.png);
+        background-size: cover;
+        margin: 0;
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        min-height: 100vh; 
+        flex-direction: column; 
+        text-align: center; 
+    }
+
+    section{
+        width: 280px;
+        background-color: white;
+        border-radius: 4px;
+        margin-top: 20px;
+        font-size: 30px;
+    }
+
+    .status-img {
+        height: 280px;
+        width: 280px;
+        display: block;
+        margin: 0 auto; 
+    }
+
+    div{
+        background-color: rgb(255, 255, 255);
+        border-radius: 4px;
+        margin: 5px;
+        font-size: 30px;
+    }
+
+    img[src="image/tela de loading.PNG"] {
+        animation: spin 1.5s linear infinite;
+        height: 75px;
+        width: 75px;
+    }
+
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg); 
+        }
+        to {
+            transform: rotate(360deg); 
+        }
+    }
+
+
+ </style>
+<body>
+
+    <section id="momento"> Status </section>
+     <div id="container">
+        <img src="image/tela de loading.PNG" alt="carregamento" class="status-img" id="imagem">
+        <div class="status-text" id="mensagem"> Carregando... </div>
+     </div>
+ 
+ 
+</body>
+<script>
+   function carregarImagem() {
+            fetch('https://niloweb.com.br/transit-room/api/reg_endpoint_all.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0 && data[0].res && data[0].dia) {
+                        const condition = data[0].res;
+                        let mensagem;
+                        switch(condition) {
+                            case 'A':"Nom"
+                                mensagem = '"No Aguardo"';
+                                document.getElementById('imagem').src = "image/mel.png";
+                                break;
+                            case 'B':
+                                mensagem = '"Bloqueado"';
+                                document.getElementById('imagem').src = "image/pomni tristona.png";
+                                break;
+                            case 'L':
+                                mensagem = '"Liberado"';
+                                document.getElementById('imagem').src = "image/v.png";
+                                break;
+                            default:
+                                console.error('Condição desconhecida:', condition);
+                        }
+                        document.getElementById('mensagem').innerText = mensagem;
+                    } else {
+                        console.error('Erro ao carregar imagem da API.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao conectar à API:', error);
+                });
+                setTimeout(carregarImagem, 2000);
+        }
+        window.onload = carregarImagem;
+
+
+</script>
+</html>
